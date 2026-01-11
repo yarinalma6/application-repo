@@ -26,8 +26,10 @@ pipeline {
 
         stage('Build Image') {
             steps {
-                script {  
-                    sh "docker build -t ${REGISTRY_URL}/${ECR_REPO_NAME}:${IMAGE_TAG} ."
+                dir('calculator_app') {
+                    script {  
+                        sh "docker build -t ${REGISTRY_URL}/${ECR_REPO_NAME}:${IMAGE_TAG} ."
+                    }
                 }
             }
         }
@@ -50,7 +52,7 @@ pipeline {
     }
 
     post {
-        always {
+        always {           
             sh "docker rmi ${REGISTRY_URL}/${ECR_REPO_NAME}:${IMAGE_TAG} || true"
         }
     }
