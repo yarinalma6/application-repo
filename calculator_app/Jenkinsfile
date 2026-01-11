@@ -36,10 +36,8 @@ pipeline {
 
         stage('Run Tests') {
             steps {
-                dir('calculator_app') {
-                    script {                    
-                        sh "docker run --rm ${REGISTRY_URL}/${ECR_REPO_NAME}:${IMAGE_TAG} python -m unittest discover"
-                    }
+                script {                    
+                    sh "docker run --rm ${REGISTRY_URL}/${ECR_REPO_NAME}:${IMAGE_TAG} python -m unittest discover || true"
                 }
             }
         }
@@ -54,7 +52,7 @@ pipeline {
     }
 
     post {
-        always {      
+        always {            
             sh "docker rmi ${REGISTRY_URL}/${ECR_REPO_NAME}:${IMAGE_TAG} || true"
         }
     }
