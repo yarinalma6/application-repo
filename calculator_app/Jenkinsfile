@@ -5,8 +5,9 @@ pipeline {
         AWS_ACCOUNT_ID = '992382545251'
         AWS_REGION     = 'us-east-1'
         ECR_REPO_NAME  = 'yarin-repo'
-        IMAGE_TAG      = "${env.GIT_COMMIT.take(7)}"
         REGISTRY_URL   = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com"
+        CLEAN_BRANCH   = "${env.BRANCH_NAME.replaceAll('/', '-')}"
+        IMAGE_TAG      = "${CLEAN_BRANCH}-build-${env.BUILD_NUMBER}"
     }
 
     stages {
