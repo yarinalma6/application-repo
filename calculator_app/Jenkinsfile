@@ -57,6 +57,7 @@ pipeline {
 
     post {
         always {            
+        always {           
             sh "docker rmi ${REGISTRY_URL}/${ECR_REPO_NAME}:${IMAGE_TAG} || true"
         }
     }
