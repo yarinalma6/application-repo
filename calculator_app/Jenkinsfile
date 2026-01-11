@@ -19,7 +19,6 @@ pipeline {
         stage('Login to ECR') {
             steps {
                 script {
-                    // הלוגין עובד כעת לאחר התקנת ה-AWS CLI בקונטיינר
                     sh "aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${REGISTRY_URL}"
                 }
             }
@@ -37,16 +36,15 @@ pipeline {
 
         stage('Run Tests') {
             steps {
-                script {                    
-                    sh "docker run --rm ${REGISTRY_URL}/${ECR_REPO_NAME}:${IMAGE_TAG} python -m unittest discover"
+                dir('calculator_app') {
+                    script {                    
+                        sh "docker run --rm ${REGISTRY_URL}/${ECR_REPO_NAME}:${IMAGE_TAG} python -m unittest discover"
+                    }
                 }
             }
         }
 
         stage('Push to ECR') {
-            when {
-                branch 'main'
-            }
             steps {
                 script {
                     sh "docker push ${REGISTRY_URL}/${ECR_REPO_NAME}:${IMAGE_TAG}"
@@ -56,8 +54,7 @@ pipeline {
     }
 
     post {
-        always {            
-        always {           
+        always {      
             sh "docker rmi ${REGISTRY_URL}/${ECR_REPO_NAME}:${IMAGE_TAG} || true"
         }
     }
